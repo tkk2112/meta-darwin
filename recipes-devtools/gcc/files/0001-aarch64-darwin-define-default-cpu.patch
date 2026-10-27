@@ -1,0 +1,23 @@
+Subject: [PATCH] aarch64: define DEFAULT_CPU for Darwin cross builds
+
+Ensure DEFAULT_CPU is available when the AArch64 Darwin compiler
+is built on a Linux host.
+
+Upstream-Status: Pending
+
+---
+diff --git a/gcc/config/aarch64/driver-aarch64.cc b/gcc/config/aarch64/driver-aarch64.cc
+--- a/gcc/config/aarch64/driver-aarch64.cc
++++ b/gcc/config/aarch64/driver-aarch64.cc
+@@ -34,9 +34,10 @@
+ #define DEFAULT_ARCH "apple-m1"
+ #else
+ #define DEFAULT_ARCH "8A"
+-#define DEFAULT_CPU "generic-armv8-a"
+ #endif
+
++#define DEFAULT_CPU "generic-armv8-a"
++
+
+ #if defined(__APPLE__)
+ /* macOS does not have /proc/cpuinfo and needs a different approach,

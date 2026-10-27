@@ -32,3 +32,6 @@ python do_patch:prepend() {
     if p.is_file():
         p.write_bytes(p.read_bytes().replace(b'\r\n', b'\n'))
 }
+
+# Required when building the macOS ARM64 SDK on Linux ARM64.
+SRC_URI:append = "${@' file://0001-aarch64-darwin-define-default-cpu.patch' if (d.getVar('SDK_OS') or '').startswith('darwin') else ''}"
