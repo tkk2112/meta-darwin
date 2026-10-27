@@ -26,6 +26,7 @@ OSX_TOOLCHAIN_OPTIONS = " \
     -L${STAGING_DIR_TARGET}${SDKPATHNATIVE}/usr/lib \
     -L${STAGING_DIR_TARGET}${SDKPATHNATIVE}/runtime/usr/lib \
     -L${STAGING_DIR_TARGET}${SDKPATHNATIVE}/runtime/usr/lib/system \
+    -F${STAGING_DIR_TARGET}${SDKPATHNATIVE}/runtime/System/Library/Frameworks \
 "
 
 TOOLCHAIN_OPTIONS:append:darwin21 = " \
