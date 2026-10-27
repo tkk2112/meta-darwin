@@ -1,0 +1,24 @@
+Subject: [PATCH] Xcode: avoid ApplicationServices headers with GCC
+
+The ApplicationServices umbrella header includes CoreGraphics and
+ImageIO declarations using Apple's Blocks extension, which GCC does
+not support.
+
+CMake only uses this header to open generated Xcode projects through
+Launch Services. Disable that optional operation for GCC builds while
+retaining the Xcode project generator and normal Clang behavior.
+
+Upstream-Status: Pending
+
+diff --git a/Source/cmGlobalXCodeGenerator.cxx b/Source/cmGlobalXCodeGenerator.cxx
+--- a/Source/cmGlobalXCodeGenerator.cxx
++++ b/Source/cmGlobalXCodeGenerator.cxx
+@@ -59,7 +59,7 @@
+ #  include <CoreFoundation/CFString.h>
+ #  include <CoreFoundation/CFURL.h>
+ #  include <CoreFoundation/CFUUID.h>
+-#  if !TARGET_OS_IPHONE
++#  if !TARGET_OS_IPHONE && defined(__clang__)
+ #    define HAVE_APPLICATION_SERVICES
+ #    include <ApplicationServices/ApplicationServices.h>
+ #  endif
