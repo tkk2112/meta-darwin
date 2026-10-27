@@ -1,5 +1,9 @@
 SDK_OS = "darwin21"
 
+# Darwin nativesdk executables are Mach-O binaries and cannot run
+# through Linux QEMU user-mode emulation.
+EXEWRAPPER_ENABLED:class-nativesdk = "False"
+
 SOLIBS:darwin21 = ".dylib"
 SOLIBSDEV:darwin21 = ".dylibbroken"
 
