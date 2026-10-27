@@ -1,0 +1,40 @@
+Subject: [PATCH] configure: disable POSIX feature macros for Darwin cross-builds
+
+When cross-compiling for Darwin, ac_sys_release is empty. The
+existing Darwin version patterns therefore do not match, causing
+configure to define _POSIX_C_SOURCE and _XOPEN_SOURCE.
+
+On Darwin these macros hide non-POSIX APIs, including sendfile(),
+from system headers.
+
+Handle the empty release explicitly, preserving the existing
+behavior for native builds.
+
+Upstream-Status: Pending
+
+diff --git a/configure.ac b/configure.ac
+--- a/configure.ac
++++ b/configure.ac
+@@ -835,6 +835,9 @@
+     define_xopen_source=no;;
+   Darwin/@<:@[12]@:>@@<:@0-9@:>@.*)
+     define_xopen_source=no;;
++  # Cross-compilation does not provide ac_sys_release.
++  Darwin/)
++    define_xopen_source=no;;
+   # On iOS, defining _POSIX_C_SOURCE also disables platform specific features.
+   iOS/*)
+     define_xopen_source=no;;
+diff --git a/configure b/configure
+--- a/configure
++++ b/configure
+@@ -4403,6 +4403,9 @@
+     define_xopen_source=no;;
+   Darwin/[12][0-9].*)
+     define_xopen_source=no;;
++  # Cross-compilation does not provide ac_sys_release.
++  Darwin/)
++    define_xopen_source=no;;
+   # On iOS, defining _POSIX_C_SOURCE also disables platform specific features.
+   iOS/*)
+     define_xopen_source=no;;

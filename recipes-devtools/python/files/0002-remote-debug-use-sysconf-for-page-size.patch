@@ -1,0 +1,28 @@
+From: CPython upstream
+Subject: [PATCH] gh-157549: Use sysconf() for the page size in remote_debug.h
+
+getpagesize() is not an ISO C or POSIX function. Darwin hides its
+prototype under -std=c11, causing cross-builds to fail with
+-Werror=implicit-function-declaration.
+
+Use sysconf(_SC_PAGESIZE), falling back to 4096 on failure.
+
+Upstream-Status: Backport [https://github.com/python/cpython/commit/9193375382fbfc871a8a1c14f918895081e219a1]
+
+---
+ Python/remote_debug.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/Python/remote_debug.h b/Python/remote_debug.h
+--- a/Python/remote_debug.h
++++ b/Python/remote_debug.h
+@@ -97,7 +97,8 @@ get_page_size(void) {
+         GetSystemInfo(&si);
+         page_size = si.dwPageSize;
+ #else
+-        page_size = (size_t)getpagesize();
++        long n = sysconf(_SC_PAGESIZE);
++        page_size = (n > 0) ? (size_t)n : 4096;
+ #endif
+     }
+     return page_size;

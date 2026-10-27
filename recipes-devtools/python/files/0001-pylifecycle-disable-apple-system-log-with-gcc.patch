@@ -1,0 +1,25 @@
+Subject: [PATCH] pylifecycle: disable Apple system logging with GCC
+
+Apple's os_log_with_type macro relies on Clang-specific builtins.
+When cross-compiling CPython for Darwin using GCC, those builtins
+are unavailable.
+
+Disable the optional unified logging integration for non-Clang
+compilers. Keep existing behavior for Clang builds.
+
+Upstream-Status: Pending
+
+diff --git a/Python/pylifecycle.c b/Python/pylifecycle.c
+--- a/Python/pylifecycle.c
++++ b/Python/pylifecycle.c
+@@ -45,7 +45,9 @@
+ #  include <mach-o/loader.h>
+ // The os_log unified logging APIs were introduced in macOS 10.12, iOS 10.0,
+ // tvOS 10.0, and watchOS 3.0;
+-#  if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
++#  if !defined(__clang__)
++#    define HAS_APPLE_SYSTEM_LOG 0
++#  elif defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
+ #    define HAS_APPLE_SYSTEM_LOG 1
+ #  elif defined(TARGET_OS_OSX) && TARGET_OS_OSX
+ #    if defined(MAC_OS_X_VERSION_10_12) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_12
