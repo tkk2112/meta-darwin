@@ -41,10 +41,9 @@ TOOLCHAIN_OPTIONS:append:class-cross-canadian = " \
     ${OSX_TOOLCHAIN_OPTIONS} \
 "
 
-# Remove -rpath-link
 BUILDSDK_LDFLAGS = " \
     -L${STAGING_LIBDIR} \
-    -Wl,-rpath,${libdir} \
+    -Wl,-rpath,@executable_path/../lib \
 "
 
 MACHINEOVERRIDES .= ":darwinsdk"
