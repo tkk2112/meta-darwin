@@ -102,3 +102,16 @@ ERROR_QA:remove = "buildpaths"
 # one level up and are only found via an explicit -I. Do this for every
 # nativesdk recipe instead of per recipe (see e.g. curl, nettle).
 CPPFLAGS:append:class-nativesdk = " -I${STAGING_INCDIR}"
+CFLAGS:append:class-nativesdk = " -I${STAGING_INCDIR}"
+CXXFLAGS:append:class-nativesdk = " -I${STAGING_INCDIR}"
+
+do_write_config:append:class-nativesdk() {
+    if [ "${SDK_OS}" = "darwin21" ] && [ -f "${WORKDIR}/meson.cross" ]; then
+        sed -i \
+            -e "s/^system = 'darwin21'$/system = 'darwin'/" \
+            -e "/^system = 'darwin'$/a\\subsystem = 'macos'" \
+            -e "/^c_link_args = '[^']*'$/s/^\(c_link_args = \)\(.*\)$/\1[\2]/" \
+            -e "/^cpp_link_args = '[^']*'$/s/^\(cpp_link_args = \)\(.*\)$/\1[\2]/" \
+            "${WORKDIR}/meson.cross"
+    fi
+}
