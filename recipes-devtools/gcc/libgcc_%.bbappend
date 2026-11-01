@@ -16,7 +16,7 @@ do_install:darwin21 () {
     cp ${B}/${TARGET_SYS}/${BPN}/libgcov.a ${D}${libdir}
     ln -s libgcc_s.1.1.dylib ${D}${libdir}/libgcc.dylib
     ln -s libgcc_s.1.1.dylib ${D}${libdir}/libgcc_s.dylib
-    ${TARGET_SYS}-install_name_tool -id ${libdir}/libgcc_s.1.1.dylib ${D}/${libdir}/libgcc_s.1.1.dylib
+    ${TARGET_SYS}-install_name_tool -id @rpath/libgcc_s.1.1.dylib ${D}${libdir}/libgcc_s.1.1.dylib
 }
 
 PACKAGES:append:darwin21 = " ${PN}-staticdev"
